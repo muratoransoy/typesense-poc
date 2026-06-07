@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: pg-typesense-poc
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: appdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+
+  typesense:
+    image: typesense/typesense:30.2
+    container_name: typesense-poc
+    ports:
+      - "8108:8108"
+    volumes:
+      - typesense-data:/data
+    command:
+      [
+        "--data-dir", "/data",
+        "--api-key", "typesense123",
+        "--enable-cors"
+      ]
+
+volumes:
+  postgres-data:
+  typesense-data:
