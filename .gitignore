@@ -1,0 +1,18 @@
+.env
+
+# Local build outputs
+bin/
+dist/
+*.exe
+
+# Go test/build cache artifacts that may appear in the workspace
+.gocache/
+.gomodcache/
+coverage.out
+
+# Editor and OS files
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+.DS_Store

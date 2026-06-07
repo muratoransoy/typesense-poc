@@ -1,3 +1,5 @@
+# This compose file runs only the infrastructure.
+# Go workers are started locally with `go run` so the POC is easy to debug.
 services:
   postgres:
     image: postgres:16
@@ -7,22 +9,30 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: appdb
     ports:
+      # Exposes PostgreSQL to the local Go workers at localhost:5432.
       - "5432:5432"
     volumes:
+      # Keeps PostgreSQL data between container restarts.
       - postgres-data:/var/lib/postgresql/data
+      # SQL files in ./sql run automatically on a fresh PostgreSQL volume.
       - ./sql:/docker-entrypoint-initdb.d
 
   typesense:
     image: typesense/typesense:30.2
     container_name: typesense-poc
     ports:
+      # Exposes the Typesense HTTP API to local curl and Go workers.
       - "8108:8108"
     volumes:
+      # Typesense stores its search index data under /data.
       - typesense-data:/data
     command:
       [
+        # data-dir is where Typesense persists collection/index files.
         "--data-dir", "/data",
-        "--api-key", "typesense123",
+        # api-key is required on every Typesense request in this POC.
+        "--api-key", "xyz",
+        # CORS is useful when later testing Typesense from a browser UI.
         "--enable-cors"
       ]
 
