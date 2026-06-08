@@ -16,9 +16,14 @@ const batchSize = 100
 // Worker reads search_outbox events and applies them to Typesense.
 type Worker struct {
 	pool      *pgxpool.Pool
-	search    *typesense.Client
+	search    searchClient
 	interval  time.Duration
 	batchSize int
+}
+
+type searchClient interface {
+	UpsertRawJSON(ctx context.Context, rawJSON []byte) error
+	DeleteDocument(ctx context.Context, id string) error
 }
 
 type Event struct {
